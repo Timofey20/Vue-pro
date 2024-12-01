@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bybit API Request</title>
+</head>
+
+<body>
+  <h1>Bybit Open Interest API</h1>
+  <p>Получение данных об открытом интересе</p>
+  <button id="fetchData">Получить данные</button>
+  <pre id="response"></pre>
+
+  <script>
+    document.getElementById('fetchData').addEventListener('click', async () => {
+      // Получаем текущее время в миллисекундах
+      const currentTime = Date.now();
+      const fiveMinutesAgo = currentTime - 5 * 60 * 1000;
+
+      // Формируем параметры запроса
+      const queryParams = {
+        category: "inverse",
+        symbol: "DOGSUSDT",
+        intervalTime: "5min",
+        // startTime: currentTime,
+        // endTime: fiveMinutesAgo,
+      };
+
+      // Преобразуем объект параметров в строку запроса
+      const queryString = new URLSearchParams(queryParams).toString();
+
+      // Полный URL с параметрами
+      const url = `https://api-testnet.bybit.com/v5/market/open-interest?${queryString}`;
+
+      try {
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+
+        data.result.list.forEach((item, index) => {
+
+          const DateInObject = item;
+
+          // Создаем объект Date
+          const date = DateInObject.timestamp;
+          // console.log(date);
+
+          // Преобразуем в строку в часовом поясе Бангкока (UTC+7)
+          const options = {
+            timeZone: 'Asia/Bangkok',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+          };
+          const bangkokTime = new Intl.DateTimeFormat('en-US', options).format(date);
+
+          console.log(`Таймштамп ${date} в Бангкоке: ${bangkokTime}, значение - ${DateInObject.openInterest}`);
+
+        });
+
+        document.getElementById('response').textContent = JSON.stringify(data, null, 2); // Вывод ответа на страницу
+
+      } catch (error) {
+        console.error('Ошибка:', error);
+        document.getElementById('response').textContent = `Ошибка: ${error.message}`;
+      }
+    });
+  </script>
+</body>
+
+</html>
