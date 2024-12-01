@@ -45,7 +45,7 @@ onUnmounted(() => {
 
 function formatData(data: any) {
   tableData.value = [];
-  data.result.list.forEach((item: { time: any, openInterest: string }, index: any) => {
+  data.result.list.forEach((item: { timestamp: any, openInterest: string }, index: any) => {
     const time = shortFormatTimestamp(item.timestamp);
     tableData.value.push({ timestamp: time, openInterest: item.openInterest.split('.')[0] })
   });
