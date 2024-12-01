@@ -21,8 +21,7 @@
 <script setup lang="ts">
 import getOpenInteres from '@/stores/getOpenInteres';
 import { onMounted, onUnmounted, ref } from 'vue';
-import formatTimestamp from './formatTimestamp';
-import shortFormatTimestamp from './shortformatTimestamp';
+import shortFormatTimestamp from './shortFormatTimestamp';
 import getCoinPrice from '@/stores/getCoinPrice';
 
 const props = defineProps(['coin'])
